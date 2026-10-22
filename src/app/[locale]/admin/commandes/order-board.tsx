@@ -43,6 +43,7 @@ export function OrderBoard() {
     const supabase = createClient();
     const channel = supabase.channel('admin-orders-board')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => { void refresh(); })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'order_events' }, () => { void refresh(); })
       .subscribe();
     return () => { void supabase.removeChannel(channel); };
   }, [refresh]);

@@ -1,7 +1,7 @@
 # JR Concept: Progress
 
 ## Next step
-Task 05: build livreur workflows.
+Task 06: build checkout.
 
 ## Status
 - [x] 01 Data model
@@ -28,11 +28,11 @@ Task 05: build livreur workflows.
   - [x] cash attendu list
   - [x] journal + dashboard
   - [x] daily cash closing
-- [ ] 05 Livreur
-  - [ ] assigned list
-  - [ ] Livré / Non livré flow
-  - [ ] cash à remettre
-  - [ ] offline retry
+- [x] 05 Livreur
+  - [x] assigned list
+  - [x] Livré / Non livré flow
+  - [x] cash à remettre
+  - [x] offline retry
 - [ ] 06 Checkout
   - [ ] form + payment mode toggle
   - [ ] create_order integration + limits
@@ -52,6 +52,7 @@ Task 05: build livreur workflows.
 2026-10-22 09:35 | Task 02 | Added cookie-based staff auth, courier signup/approval, guarded routes, and service-only order APIs; combined SQL tests pass | src/app, src/lib, src/i18n, src/middleware.ts, messages, package.json, tsconfig.json, next.config.ts, supabase/migrations/20261022000200_auth_roles.sql, supabase/tests/02_auth_roles.sql, README.md, .env.example, .gitignore, docs/PROGRESS.md
 2026-10-22 23:02 | Task 03 | Added public catalog, localized product details and WhatsApp links, local cart, secured product management, compressed Storage uploads, trash/restore, and pagination | src/app, src/lib/catalog, src/app/api/admin/products/route.ts, messages, next.config.ts, supabase/migrations/20261022000300_catalog_storage.sql, docs/PROGRESS.md
 2026-10-22 23:40 | Task 04 | Added order board/detail actions, manual orders, province transport, cash expected/closing, journal, dashboard, RPC migration, and passing SQL workflow tests | src/app, src/lib, messages, supabase/migrations/20261022000400_admin_orders.sql, supabase/tests/04_admin_orders.sql, docs/PROGRESS.md
+2026-10-22 23:55 | Task 05 | Added courier assigned-order dashboard, call/maps actions, delivery/non-delivery flows, cash due, offline retry, courier-scoped realtime events, and passing SQL regressions | src/app/[locale]/livreur, src/app/[locale]/globals.css, messages, supabase/migrations/20261022000500_courier_realtime.sql, docs/PROGRESS.md
 
 ## Decisions
 (deviations from the prompts or defaults chosen)
@@ -60,9 +61,10 @@ Task 02 uses self-service email/password signup for pending couriers; superadmin
 French is the unprefixed default locale so `/inscription` works directly. Order creation and tracking use server-only service-role handlers; IP throttling uses an HMAC of the trusted ingress IP header. Initial superadmin promotion is documented as a one-time SQL bootstrap.
 Task 03 uses a public `products` Storage bucket restricted to WebP files under 150 KB; the existing logo asset is absent, so the storefront uses a text monogram until one is supplied.
 Task 04 adds small SECURITY DEFINER wrappers for manual order creation, transport details, manual province delivery, and cash closing; existing Task 01 transition functions remain unchanged. Realtime is enabled for `orders` only when the Supabase publication exists.
+Task 05 writes only through `livreur_set_outcome`; offline actions are queued in localStorage and replayed only after confirming the order remains en_cours. Courier realtime event reads are limited by RLS to events for assigned orders.
 
 ## Blockers
 (anything waiting on Rayan, mum, or an external account)
 Full Next.js typecheck/build is blocked because npm registry requests time out; no compiler could be installed in this environment.
 Task 03 browser/runtime validation is also blocked because Next.js dependencies and Supabase environment credentials are unavailable; SQL migration and prior SQL behavior suites passed on a disposable Postgres cluster.
-Fix later: retry `npm install` on a stable network from the project root; then run `npm run typecheck` and `npm run build`. Copy `.env.example` to `.env.local`, set the Supabase project URL, anon key, server-only service-role key, trusted proxy IP header, and app URL; apply migrations in order to the Supabase project and run the SQL tests. Configure the app URL/email redirect allowlist in Supabase Auth before testing signup and orders. Do not commit `.env.local` or expose the service-role key. Task 04's full frontend type diagnostics and browser workflow need that install/config; its SQL migrations and workflow assertions passed locally.
+Fix later: npm retries failed first on registry timeouts, then with `ENOTEMPTY` renaming the partial `node_modules/next`. After stopping active npm commands, preserve/rename the partial `node_modules` directory rather than deleting it, then run `npm install` on a stable network; run `npm run typecheck` and `npm run build`. Copy `.env.example` to `.env.local`, set Supabase URL, anon key, server-only service-role key, trusted proxy IP header, and app URL; apply migrations in order and run SQL tests. Configure Supabase Auth redirect allowlist. Never commit `.env.local` or expose the service-role key. Frontend runtime checks remain blocked pending dependency installation and Supabase credentials; Task 04/05 SQL suites pass locally.

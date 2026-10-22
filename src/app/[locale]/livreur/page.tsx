@@ -1,6 +1,5 @@
-import { getTranslations } from 'next-intl/server';
+import { CourierConsole } from './courier-console';
 
-export default async function LivreurPage() {
-  const t = await getTranslations('Auth');
-  return <h1>{t('courierHome')}</h1>;
+export default function LivreurPage() {
+  return <CourierConsole />;
 }
