@@ -1,0 +1,30 @@
+{
+  "Auth": {
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "login": "Connexion",
+    "register": "Créer un compte livreur",
+    "pending": "Compte en attente d'approbation par le superadministrateur.",
+    "logout": "Déconnexion",
+    "invalid": "Identifiants invalides ou compte inactif.",
+    "registered": "Demande envoyée. Votre compte doit être approuvé avant connexion.",
+    "failed": "Une erreur est survenue. Réessayez.",
+    "submit": "Continuer",
+    "users": "Utilisateurs",
+    "createUser": "Créer un compte du personnel",
+    "adminRole": "Administrateur",
+    "courierRole": "Livreur",
+    "superadminRole": "Superadministrateur",
+    "adminHome": "Administration",
+    "courierHome": "Livraison",
+    "approve": "Approuver",
+    "save": "Enregistrer",
+    "disable": "Désactiver",
+    "active": "Actif",
+    "inactive": "En attente ou désactivé",
+    "role": "Rôle",
+    "forbidden": "Accès non autorisé"
+  }
+}

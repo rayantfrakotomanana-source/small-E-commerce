@@ -1,0 +1,30 @@
+{
+  "Auth": {
+    "email": "Adiresy mailaka",
+    "password": "Teny miafina",
+    "fullName": "Anarana feno",
+    "phone": "Finday",
+    "login": "Hiditra",
+    "register": "Mamorona kaontin'ny mpanatitra",
+    "pending": "Miandry ny fankatoavan'ny mpitantana ambony ny kaonty.",
+    "logout": "Hivoaka",
+    "invalid": "Tsy marina ny fidirana na tsy mavitrika ny kaonty.",
+    "registered": "Voaray ny fangatahana. Mila ankatoavina ny kaonty vao afaka miditra.",
+    "failed": "Nisy olana. Andramo indray.",
+    "submit": "Tohizo",
+    "users": "Mpampiasa",
+    "createUser": "Mamorona kaontin'ny mpiasa",
+    "adminRole": "Mpitantana",
+    "courierRole": "Mpanatitra",
+    "superadminRole": "Mpitantana ambony",
+    "adminHome": "Fitantanana",
+    "courierHome": "Fanaterana",
+    "approve": "Ankatoavy",
+    "save": "Tehirizo",
+    "disable": "Atsaharo",
+    "active": "Mavitrika",
+    "inactive": "Miandry na najanona",
+    "role": "Andraikitra",
+    "forbidden": "Tsy mahazo miditra"
+  }
+}
