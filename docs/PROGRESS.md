@@ -9,7 +9,7 @@ Task 03: build the catalog.
   - [x] SQL functions (create_order, mark_paid, confirm_order, assign_livreur, cancel_order, reject_spam, livreur_set_outcome, expire_unconfirmed_orders)
   - [x] seed + indexes
   - [x] SQL tests (overselling, 3 orders/24h, confirm on unpaid)
-- [ ] 02 Auth and roles
+- [x] 02 Auth and roles
   - [x] Auth + profiles trigger
   - [x] RLS policies
   - [x] route middleware
@@ -53,7 +53,7 @@ Task 03: build the catalog.
 
 ## Decisions
 (deviations from the prompts or defaults chosen)
-Used the provided 00-CONTEXT.md attachment because docs/prompts/00-CONTEXT.md is absent; generated UUID public tokens and required a server-computed app IP hash.
+For Task 01, initially used the supplied context attachment after the shorter docs/prompts/00-CONTEXT.md path failed; the source file is docs/prompts/.github/copilot-instructions.md/00-CONTEXT.md. Generated UUID public tokens and required a server-computed app IP hash.
 Task 02 uses self-service email/password signup for pending couriers; superadmin staff creation uses email invitations. Browser table mutations are denied and staff changes use guarded server actions.
 French is the unprefixed default locale so `/inscription` works directly. Order creation and tracking use server-only service-role handlers; IP throttling uses an HMAC of the trusted ingress IP header. Initial superadmin promotion is documented as a one-time SQL bootstrap.
 
