@@ -145,15 +145,19 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      admin_mark_delivered: { Args: { note?: string; target_order_id: string }; Returns: undefined };
       assign_livreur: { Args: { target_livreur_id: string; target_order_id: string }; Returns: undefined };
       cancel_order: { Args: { reason: string; target_order_id: string }; Returns: undefined };
+      close_livreur_cash: { Args: { closing_day: string; closing_note?: string; received: number; target_livreur_id: string }; Returns: string };
       confirm_order: { Args: { target_order_id: string }; Returns: undefined };
       create_order: { Args: { payload: Json }; Returns: string };
+      create_manual_order: { Args: { payload: Json }; Returns: string };
       expire_unconfirmed_orders: { Args: Record<PropertyKey, never>; Returns: number };
       livreur_set_outcome: { Args: { cash_collected?: number; outcome: string; reason?: string; target_order_id: string }; Returns: undefined };
       mark_paid: { Args: { ref?: string; target_order_id: string }; Returns: undefined };
       next_order_number: { Args: Record<PropertyKey, never>; Returns: string };
       reject_spam: { Args: { target_order_id: string }; Returns: undefined };
+      set_order_transport: { Args: { info: string; location_url: string | null; target_order_id: string }; Returns: undefined };
     };
     Enums: {
       category_kind: 'tech' | 'divers';
