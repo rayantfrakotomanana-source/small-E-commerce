@@ -1,7 +1,7 @@
 # JR Concept: Progress
 
 ## Next step
-Task 03: build the catalog.
+Task 04: build admin orders.
 
 ## Status
 - [x] 01 Data model
@@ -15,12 +15,12 @@ Task 03: build the catalog.
   - [x] route middleware
   - [x] superadmin user page
   - [x] role isolation tests
-- [ ] 03 Catalog
-  - [ ] Home + product page
-  - [ ] WhatsApp order button
-  - [ ] cart
-  - [ ] admin product CRUD + image compression
-  - [ ] soft delete + trash
+- [x] 03 Catalog
+  - [x] Home + product page
+  - [x] WhatsApp order button
+  - [x] cart
+  - [x] admin product CRUD + image compression
+  - [x] soft delete + trash
 - [ ] 04 Admin orders
   - [ ] order list + detail actions
   - [ ] manual order form
@@ -50,13 +50,16 @@ Task 03: build the catalog.
 2026-10-22 08:53 | Task 01 | Added data model migration, typed database API, and passing SQL behavior tests | supabase/migrations/20261022000100_data_model.sql, supabase/tests/01_data_model.sql, src/lib/database.types.ts, docs/PROGRESS.md
 2026-10-22 09:30 | Task 02 | Added pending courier profile trigger, role-scoped RLS, and passing isolation tests | supabase/migrations/20261022000200_auth_roles.sql, supabase/tests/02_auth_roles.sql
 2026-10-22 09:35 | Task 02 | Added cookie-based staff auth, courier signup/approval, guarded routes, and service-only order APIs; combined SQL tests pass | src/app, src/lib, src/i18n, src/middleware.ts, messages, package.json, tsconfig.json, next.config.ts, supabase/migrations/20261022000200_auth_roles.sql, supabase/tests/02_auth_roles.sql, README.md, .env.example, .gitignore, docs/PROGRESS.md
+2026-10-22 23:02 | Task 03 | Added public catalog, localized product details and WhatsApp links, local cart, secured product management, compressed Storage uploads, trash/restore, and pagination | src/app, src/lib/catalog, src/app/api/admin/products/route.ts, messages, next.config.ts, supabase/migrations/20261022000300_catalog_storage.sql, docs/PROGRESS.md
 
 ## Decisions
 (deviations from the prompts or defaults chosen)
 For Task 01, initially used the supplied context attachment after the shorter docs/prompts/00-CONTEXT.md path failed; the source file is docs/prompts/.github/copilot-instructions.md/00-CONTEXT.md. Generated UUID public tokens and required a server-computed app IP hash.
 Task 02 uses self-service email/password signup for pending couriers; superadmin staff creation uses email invitations. Browser table mutations are denied and staff changes use guarded server actions.
 French is the unprefixed default locale so `/inscription` works directly. Order creation and tracking use server-only service-role handlers; IP throttling uses an HMAC of the trusted ingress IP header. Initial superadmin promotion is documented as a one-time SQL bootstrap.
+Task 03 uses a public `products` Storage bucket restricted to WebP files under 150 KB; the existing logo asset is absent, so the storefront uses a text monogram until one is supplied.
 
 ## Blockers
 (anything waiting on Rayan, mum, or an external account)
 Full Next.js typecheck/build is blocked because npm registry requests time out; no compiler could be installed in this environment.
+Task 03 browser/runtime validation is also blocked because Next.js dependencies and Supabase environment credentials are unavailable; SQL migration and prior SQL behavior suites passed on a disposable Postgres cluster.

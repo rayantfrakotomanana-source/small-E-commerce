@@ -3,6 +3,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { CartProvider } from './cart-context';
+import './globals.css';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -16,5 +18,5 @@ export default async function LocaleLayout({
   if (!routing.locales.includes(locale as 'fr' | 'mg')) notFound();
   setRequestLocale(locale);
   const messages = await getMessages();
-  return <html lang={locale}><body><NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider></body></html>;
+  return <html lang={locale}><body><NextIntlClientProvider messages={messages}><CartProvider>{children}</CartProvider></NextIntlClientProvider></body></html>;
 }

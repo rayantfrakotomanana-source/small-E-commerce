@@ -15,5 +15,5 @@ export async function StaffLayout({
   roles: Role[];
 }) {
   await requireRole(roles);
-  return <><header><LogoutButton locale={locale} /></header><main>{children}</main></>;
+  return <><header className="staff-topbar"><LogoutButton locale={locale} /></header><main>{children}</main></>;
 }
