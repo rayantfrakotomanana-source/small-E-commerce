@@ -1,16 +1,33 @@
-# small-E-commerce
+# JR Concept — Business Management System
 
-JR Concept staff authentication and role-based access control.
+JR Concept is an internal owner-only business management application built with Next.js, Supabase, and TypeScript. It replaces the previous e-commerce storefront and courier workflow.
+
+## Modules
+
+- Dashboard
+- Inventory and stock movements
+- Sales, partial payments, returns, and cancellations
+- Expenses and categories
+- Customer records and balances
+- Financial summary and actual cash distinction
+- Daily cash journal and discrepancy tracking
+- Sales, expense, inventory CSV/JSON reports
 
 ## Setup
 
-1. Install dependencies with `npm install`.
-2. Copy `.env.example` to `.env.local` and set the Supabase URL, anon key, and server-only service role key.
-3. Apply the SQL files in `supabase/migrations` in order.
-4. Start the app with `npm run dev`.
+1. Copy `.env.example` to `.env.local`.
+2. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+3. Set `SUPABASE_SERVICE_ROLE_KEY` only on trusted server infrastructure.
+4. Apply Supabase migrations in filename order.
+5. Create the owner account in Supabase Auth.
+6. Add or activate its matching `profiles` row with `role = 'superadmin'` and `active = true`.
+7. Run `npm install`.
+8. Run `npm run typecheck`.
+9. Run `npm run build`.
+10. Run `npm run dev`.
 
-Supabase email/password authentication must be enabled. Configure the application URL and email redirect allowlist in Supabase Auth. `/inscription` creates pending livreur accounts; approve and assign staff roles under `/superadmin/utilisateurs`.
+Open `http://localhost:3000/login`.
 
-On Netlify, IP throttling reads `x-nf-client-connection-ip`; on another host, set `TRUSTED_CLIENT_IP_HEADER` to a header the trusted ingress overwrites. Never use a client-controlled forwarding header without proxy sanitization. Promote the first trusted account once through the Supabase SQL editor after signing up: `UPDATE public.profiles SET role = 'superadmin', active = true WHERE id = '<auth-user-uuid>';`.
+## Security
 
-Run the database behavior checks against a fresh Supabase test database with the SQL files in `supabase/tests`.
+Public registration, public storefront routes, courier accounts, and employee role management are not part of this application. The owner profile is the only authorized application role.

@@ -6,11 +6,28 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-type Table<Row, Insert, Update = Partial<Insert>> = {
+type Relationship = {
+  foreignKeyName: string;
+  columns: string[];
+  isOneToOne?: boolean;
+  referencedRelation: string;
+  referencedColumns: string[];
+};
+
+type Table<
+  Row extends Record<string, unknown>,
+  Insert extends Record<string, unknown>,
+  Update extends Record<string, unknown> = Partial<Insert>,
+> = {
   Row: Row;
   Insert: Insert;
   Update: Update;
   Relationships: [];
+};
+
+type Rpc<Args extends Record<string, unknown>, Returns> = {
+  Args: Args;
+  Returns: Returns;
 };
 
 export type Database = {
@@ -142,22 +159,78 @@ export type Database = {
         { key: string; value: Json },
         { key: string; value: Json }
       >;
+      bms_categories: Table<
+        { id: string; name: string; sort_order: number; archived_at: string | null; created_at: string },
+        { id?: string; name: string; sort_order?: number; archived_at?: string | null; created_at?: string }
+      >;
+      bms_products: Table<
+        { id: string; category_id: string | null; name: string; sku: string | null; description: string; purchase_price: number; selling_price: number; stock_quantity: number; minimum_stock: number; image_url: string | null; archived_at: string | null; created_at: string; updated_at: string },
+        { id?: string; category_id?: string | null; name: string; sku?: string | null; description?: string; purchase_price?: number; selling_price?: number; stock_quantity?: number; minimum_stock?: number; image_url?: string | null; archived_at?: string | null; created_at?: string; updated_at?: string }
+      >;
+      bms_customers: Table<
+        { id: string; name: string; phone: string | null; address: string | null; notes: string | null; created_at: string; updated_at: string },
+        { id?: string; name: string; phone?: string | null; address?: string | null; notes?: string | null; created_at?: string; updated_at?: string }
+      >;
+      bms_sales: Table<
+        { id: string; sale_number: string; customer_id: string | null; subtotal: number; discount: number; total: number; payment_status: 'paid' | 'partial' | 'unpaid' | 'cancelled'; status: 'completed' | 'cancelled' | 'returned'; note: string | null; sold_at: string; created_by: string | null; cancelled_at: string | null; cancellation_reason: string | null; created_at: string },
+        { id?: string; sale_number: string; customer_id?: string | null; subtotal: number; discount?: number; total: number; payment_status?: 'paid' | 'partial' | 'unpaid' | 'cancelled'; status?: 'completed' | 'cancelled' | 'returned'; note?: string | null; sold_at?: string; created_by?: string | null; cancelled_at?: string | null; cancellation_reason?: string | null; created_at?: string }
+      >;
+      bms_sale_items: Table<
+        { id: string; sale_id: string; product_id: string | null; product_name: string; purchase_price: number; unit_price: number; quantity: number; line_total: number },
+        { id?: string; sale_id: string; product_id?: string | null; product_name: string; purchase_price: number; unit_price: number; quantity: number; line_total: number }
+      >;
+      bms_payments: Table<
+        { id: string; sale_id: string | null; amount: number; method: 'cash' | 'mobile_money' | 'bank_transfer' | 'other'; reference: string | null; paid_at: string; created_at: string },
+        { id?: string; sale_id?: string | null; amount: number; method: 'cash' | 'mobile_money' | 'bank_transfer' | 'other'; reference?: string | null; paid_at?: string; created_at?: string }
+      >;
+      bms_expense_categories: Table<
+        { id: string; name: string; archived_at: string | null; created_at: string },
+        { id?: string; name: string; archived_at?: string | null; created_at?: string }
+      >;
+      bms_expenses: Table<
+        { id: string; category_id: string | null; description: string; amount: number; method: 'cash' | 'mobile_money' | 'bank_transfer' | 'other'; expense_date: string; created_by: string | null; created_at: string },
+        { id?: string; category_id?: string | null; description: string; amount: number; method: 'cash' | 'mobile_money' | 'bank_transfer' | 'other'; expense_date: string; created_by?: string | null; created_at?: string }
+      >;
+      bms_stock_movements: Table<
+        { id: string; product_id: string; movement_type: 'purchase' | 'sale' | 'return' | 'adjustment' | 'sale_cancellation'; quantity_change: number; quantity_before: number; quantity_after: number; reference_type: string | null; reference_id: string | null; note: string | null; created_by: string | null; created_at: string },
+        { id?: string; product_id: string; movement_type: 'purchase' | 'sale' | 'return' | 'adjustment' | 'sale_cancellation'; quantity_change: number; quantity_before: number; quantity_after: number; reference_type?: string | null; reference_id?: string | null; note?: string | null; created_by?: string | null; created_at?: string }
+      >;
+      bms_cash_transactions: Table<
+        { id: string; transaction_type: 'opening_balance' | 'sale_payment' | 'expense' | 'adjustment' | 'closing_count'; amount: number; description: string | null; transaction_date: string; created_by: string | null; created_at: string },
+        { id?: string; transaction_type: 'opening_balance' | 'sale_payment' | 'expense' | 'adjustment' | 'closing_count'; amount: number; description?: string | null; transaction_date: string; created_by?: string | null; created_at?: string }
+      >;
+      bms_cash_snapshots: Table<
+        { id: string; snapshot_date: string; opening_balance: number; expected_closing: number; physically_counted: number | null; discrepancy: number | null; note: string | null; created_by: string | null; created_at: string },
+        { id?: string; snapshot_date: string; opening_balance: number; expected_closing: number; physically_counted?: number | null; discrepancy?: number | null; note?: string | null; created_by?: string | null; created_at?: string }
+      >;
+      bms_settings: Table<
+        { key: string; value: Json; updated_at: string },
+        { key: string; value: Json; updated_at?: string }
+      >;
     };
     Views: Record<string, never>;
     Functions: {
-      admin_mark_delivered: { Args: { note?: string; target_order_id: string }; Returns: undefined };
-      assign_livreur: { Args: { target_livreur_id: string; target_order_id: string }; Returns: undefined };
-      cancel_order: { Args: { reason: string; target_order_id: string }; Returns: undefined };
-      close_livreur_cash: { Args: { closing_day: string; closing_note?: string; received: number; target_livreur_id: string }; Returns: string };
-      confirm_order: { Args: { target_order_id: string }; Returns: undefined };
-      create_order: { Args: { payload: Json }; Returns: string };
-      create_manual_order: { Args: { payload: Json }; Returns: string };
-      expire_unconfirmed_orders: { Args: Record<PropertyKey, never>; Returns: number };
-      livreur_set_outcome: { Args: { cash_collected?: number; outcome: string; reason?: string; target_order_id: string }; Returns: undefined };
-      mark_paid: { Args: { ref?: string; target_order_id: string }; Returns: undefined };
-      next_order_number: { Args: Record<PropertyKey, never>; Returns: string };
-      reject_spam: { Args: { target_order_id: string }; Returns: undefined };
-      set_order_transport: { Args: { info: string; location_url: string | null; target_order_id: string }; Returns: undefined };
+      admin_mark_delivered: Rpc<{ note?: string; target_order_id: string }, undefined>;
+      assign_livreur: Rpc<{ target_livreur_id: string; target_order_id: string }, undefined>;
+      cancel_order: Rpc<{ reason: string; target_order_id: string }, undefined>;
+      close_livreur_cash: Rpc<{ closing_day: string; closing_note?: string; received: number; target_livreur_id: string }, string>;
+      confirm_order: Rpc<{ target_order_id: string }, undefined>;
+      create_order: Rpc<{ payload: Json }, string>;
+      create_manual_order: Rpc<{ payload: Json }, string>;
+      expire_unconfirmed_orders: Rpc<Record<PropertyKey, never>, number>;
+      livreur_set_outcome: Rpc<{ cash_collected?: number | null; outcome: string; reason?: string | null; target_order_id: string }, undefined>;
+      mark_paid: Rpc<{ ref?: string | null; target_order_id: string }, undefined>;
+      next_order_number: Rpc<Record<PropertyKey, never>, string>;
+      reject_spam: Rpc<{ target_order_id: string }, undefined>;
+      set_order_transport: Rpc<{ info: string; location_url: string | null; target_order_id: string }, undefined>;
+      bms_adjust_stock: Rpc<{ p_product_id: string; p_quantity_change: number; p_note: string }, undefined>;
+      bms_cancel_sale: Rpc<{ p_sale_id: string; p_reason: string }, undefined>;
+      bms_create_sale: Rpc<{ p_customer_id: string | null; p_discount: number; p_items: Json; p_payments: Json; p_note?: string | null; p_sold_at: string }, string>;
+      bms_record_expense: Rpc<{ p_category_id: string | null; p_description: string; p_amount: number; p_method: string; p_expense_date: string }, string>;
+      bms_record_purchase: Rpc<{ p_product_id: string; p_quantity: number; p_unit_cost: number; p_note: string }, string>;
+      bms_record_payment: Rpc<{ p_sale_id: string; p_amount: number; p_method: string; p_reference?: string | null }, string>;
+      bms_return_sale: Rpc<{ p_sale_id: string; p_reason: string }, undefined>;
+      bms_upsert_category: Rpc<{ p_id: string | null; p_name: string }, string>;
     };
     Enums: {
       category_kind: 'tech' | 'divers';

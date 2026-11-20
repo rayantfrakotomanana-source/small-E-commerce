@@ -1,11 +1,12 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/lib/database.types';
 
-export function createClient() {
+export function createClient(): SupabaseClient<Database> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) throw new Error('Supabase public environment is not configured');
-  return createBrowserClient<Database>(url, key);
+  return createBrowserClient<Database>(url, key) as unknown as SupabaseClient<Database>;
 }
